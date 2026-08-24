@@ -1,0 +1,20 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Self-built indexes & parse checkpoints — large and rebuildable via
+# scripts/build_index.py. The bundled sample index under data/sample/ is committed
+# on purpose (negated below) so the repo runs out of the box.
+*.faiss
+*.pkl
+*_parse_checkpoint.jsonl
+!data/sample/sample_corpus.faiss
+!data/sample/sample_corpus_metadata.pkl
