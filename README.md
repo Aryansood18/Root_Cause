@@ -196,10 +196,5 @@ RootCause/
 ```powershell
 pytest tests\\
 
-```
-
-
-
-```
 
 ```
