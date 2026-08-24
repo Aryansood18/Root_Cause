@@ -1,5 +1,5 @@
 
-readme_content = """# RootCause
+
 
 RootCause is a retrieval-augmented debugging assistant that ships as an **MCP tool**. Give
 it a bug report, traceback, or code snippet and it retrieves similar historical bug-fixes
