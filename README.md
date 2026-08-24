@@ -1,4 +1,5 @@
-# RootCause
+
+readme_content = """# RootCause
 
 RootCause is a retrieval-augmented debugging assistant that ships as an **MCP tool**. Give
 it a bug report, traceback, or code snippet and it retrieves similar historical bug-fixes
@@ -19,28 +20,29 @@ flowchart LR
     C --> L[Generate<br/>glm-4.7-flash]
     G -- no --> L[Generate<br/>glm-4.7-flash]
     L --> J["JSON:<br/>root_cause, fix,<br/>confidence, examples_used"]
+
 ```
 
-All retrieval/rerank/generation logic lives in [`src/core.py`](src/core.py). The MCP server
-([`src/rootcause_server.py`](src/rootcause_server.py)) and the Streamlit dashboard
-([`src/dashboard.py`](src/dashboard.py)) are thin callers of that one module, so there is a
+All retrieval/rerank/generation logic lives in [`src/core.py`](https://www.google.com/search?q=src/core.py). The MCP server
+([`src/rootcause_server.py`](https://www.google.com/search?q=src/rootcause_server.py)) and the Streamlit dashboard
+([`src/dashboard.py`](https://www.google.com/search?q=src/dashboard.py)) are thin callers of that one module, so there is a
 single source of truth for the pipeline.
 
 | Component | Model | Notes |
-|---|---|---|
+| --- | --- | --- |
 | Embedding | `qwen/qwen3-embedding-8b` | Must match the model the index was built with (dim 4096) |
 | Reranking | `deepseek/deepseek-v4-flash` | Reorders top-5 candidates; reasoning effort `low` |
 | Generation | `z-ai/glm-4.7-flash` | Grounded JSON answer; reasoning disabled |
-| Confidence gate | `0.47` | Calibrated empirically — see [CALIBRATION.md](CALIBRATION.md) |
+| Confidence gate | `0.47` | Calibrated empirically — see [CALIBRATION.md](https://www.google.com/search?q=CALIBRATION.md) |
 
 ## Quickstart (PowerShell)
 
 ```powershell
-git clone https://github.com/x4ddy/RootCause.git
+git clone [https://github.com/Aryansood18/RootCause.git](https://github.com/Aryansood18/RootCause.git)
 cd RootCause
 
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+.\\.venv\\Scripts\\Activate.ps1
 pip install -r requirements.txt
 
 # Configure your OpenRouter key
@@ -48,30 +50,32 @@ Copy-Item .env.example .env
 # then edit .env and set OPENROUTER_API_KEY=sk-or-v1-...
 
 # Run the MCP server against the bundled sample data — no data prep needed
-python src\rootcause_server.py
+python src\\rootcause_server.py
+
 ```
 
 macOS / Linux: `python3 -m venv .venv && source .venv/bin/activate`, then `cp .env.example .env`.
 
 The server speaks MCP over stdio, so it's meant to be launched by an MCP client (see
-[MCP registration](#mcp-registration)) rather than opened in a browser. The bundled sample
+[MCP registration](https://www.google.com/search?q=%23mcp-registration)) rather than opened in a browser. The bundled sample
 index (`data/sample/`) is committed, so retrieval works immediately — you only need the
 `OPENROUTER_API_KEY` for the live embedding/generation calls.
 
 ## Bring your own data
 
 The sample index is built from `data/sample/sample_bug_corpus.jsonl` by
-[`scripts/build_index.py`](scripts/build_index.py). To rebuild it, or to build an index
+[`scripts/build_index.py`](https://www.google.com/search?q=scripts/build_index.py). To rebuild it, or to build an index
 from your own corpus:
 
 ```powershell
 # Rebuild the bundled sample from its JSONL (~2,000 embedding calls, no LLM parsing)
-python scripts\build_index.py --input data\sample\sample_bug_corpus.jsonl --output data\sample\sample_corpus.faiss
+python scripts\\build_index.py --input data\\sample\\sample_bug_corpus.jsonl --output data\\sample\\sample_corpus.faiss
 
 # Build from your own corpus and point the server/dashboard at it
-python scripts\build_index.py --input my_bugs.jsonl --output data\my_corpus.faiss
-$env:FAISS_INDEX_PATH="data\my_corpus.faiss"
-$env:METADATA_PATH="data\my_corpus_metadata.pkl"
+python scripts\\build_index.py --input my_bugs.jsonl --output data\\my_corpus.faiss
+$env:FAISS_INDEX_PATH="data\\my_corpus.faiss"
+$env:METADATA_PATH="data\\my_corpus_metadata.pkl"
+
 ```
 
 `build_index.py` auto-detects each input row: rows that are **already labeled** (have
@@ -83,8 +87,8 @@ a cheap dry run when a file needs parsing.
 `core.py` reads `FAISS_INDEX_PATH` / `METADATA_PATH` from the environment, defaulting to
 the bundled sample — so pointing at a full corpus is two env vars, no code edits. After
 changing the embedding model or corpus, re-run
-[`scripts/calibrate_threshold.py`](scripts/calibrate_threshold.py) to re-pick the
-confidence gate (see [CALIBRATION.md](CALIBRATION.md)).
+[`scripts/calibrate_threshold.py`](https://www.google.com/search?q=scripts/calibrate_threshold.py) to re-pick the
+confidence gate (see [CALIBRATION.md](https://www.google.com/search?q=CALIBRATION.md)).
 
 ## MCP registration
 
@@ -96,19 +100,21 @@ cloned the repo:
   "mcpServers": {
     "rootcause": {
       "command": "python",
-      "args": ["C:\\path\\to\\RootCause\\src\\rootcause_server.py"],
+      "args": ["C:\\\\path\\\\to\\\\RootCause\\\\src\\\\rootcause_server.py"],
       "env": {
         "OPENROUTER_API_KEY": "sk-or-v1-your-key-here"
       }
     }
   }
 }
+
 ```
 
 The server exposes one tool:
 
 ```
 analyze_bug(query: str) -> str   # returns JSON: {root_cause, fix, confidence, examples_used}
+
 ```
 
 ## Dashboard
@@ -118,7 +124,8 @@ A Streamlit dashboard is included as a demo/inspection tool on top of the same p
 point):
 
 ```powershell
-streamlit run src\dashboard.py
+streamlit run src\\dashboard.py
+
 ```
 
 It shows, in one page: the configured models and the loaded index (path + vector count +
@@ -138,12 +145,8 @@ always ground on retrieval).
 **Confidence gating ON — shipped config.** 242 judged: **RAG 52% / tie 33% / baseline 14%**;
 average judge score **2.37 vs 1.00**.
 
-![Evaluation with confidence gating on](images/gate-on.png)
-
 **Confidence gating OFF — pure RAG.** 249 judged: RAG 45% / tie 33% / baseline 21%; average
 judge score 2.37 vs **1.37**.
-
-![Evaluation with confidence gating off](images/gate-off.png)
 
 **Takeaway.** Turning the gate on diverts the weak-retrieval queries to the LLM instead of
 grounding on bad context: the baseline's win share drops **21% → 14%** and RAG's rises
@@ -156,16 +159,13 @@ RAG-based retrieval, 1/12 (8%) diverted to the LLM** (the one diverted, "loop sk
 element", scores 0.434 — just below the 0.47 gate). Reproduce it live in the dashboard's
 **Routing** section.
 
-![Calls diverted to LLM vs RAG-based retrieval](images/routing-chart.png)
-
-See [CALIBRATION.md](CALIBRATION.md) for how the `0.47` gate threshold was chosen.
+See [CALIBRATION.md](https://www.google.com/search?q=CALIBRATION.md) for how the `0.47` gate threshold was chosen.
 
 ## Repo map
 
 ```
 RootCause/
   README.md
-  LICENSE
   CALIBRATION.md
   .gitignore
   .env.example
@@ -188,17 +188,25 @@ RootCause/
     routing-chart.png     # calls diverted to LLM vs RAG-based retrieval (dashboard)
   tests/
     test_smoke.py         # index/metadata alignment + one live retrieve() call
+
 ```
 
 ## Tests
 
 ```powershell
-pytest tests\
+pytest tests\\
+
 ```
 
 The alignment check runs with no API key or network. The retrieval check makes a single
 live embedding call and is skipped automatically when `OPENROUTER_API_KEY` is unset.
+"""
 
-## License
+with open("README.md", "w", encoding="utf-8") as file:
+file.write(readme_content)
 
-MIT — see [LICENSE](LICENSE). © 2026 Vinesh Sharda.
+print("README.md has been generated successfully!")
+
+```
+
+```
