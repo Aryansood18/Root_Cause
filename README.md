@@ -198,14 +198,7 @@ pytest tests\\
 
 ```
 
-The alignment check runs with no API key or network. The retrieval check makes a single
-live embedding call and is skipped automatically when `OPENROUTER_API_KEY` is unset.
-"""
 
-with open("README.md", "w", encoding="utf-8") as file:
-file.write(readme_content)
-
-print("README.md has been generated successfully!")
 
 ```
 
